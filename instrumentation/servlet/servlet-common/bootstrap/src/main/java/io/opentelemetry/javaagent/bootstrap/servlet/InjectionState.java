@@ -3,25 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package io.opentelemetry.javaagent.instrumentation.servlet.v3_0.snippet;
+package io.opentelemetry.javaagent.bootstrap.servlet;
 
 // this is shared by both ServletOutputStream and PrintWriter injection
 public class InjectionState {
   private static final int HEAD_TAG_WRITTEN_FAKE_VALUE = -1;
   private static final int HEAD_TAG_LENGTH = "<head>".length();
-  private final SnippetInjectingResponseWrapper wrapper;
+  private final Object wrapper;
   private int headTagBytesSeen = 0;
 
-  public InjectionState(SnippetInjectingResponseWrapper wrapper) {
+  public InjectionState(Object wrapper) {
+    System.out.println("InjectionState" );
     this.wrapper = wrapper;
   }
 
   public int getHeadTagBytesSeen() {
     return headTagBytesSeen;
-  }
-
-  public String getCharacterEncoding() {
-    return wrapper.getCharacterEncoding();
   }
 
   private void setHeadTagWritten() {
@@ -70,7 +67,9 @@ public class InjectionState {
     return false;
   }
 
-  public SnippetInjectingResponseWrapper getWrapper() {
+  // as an object SnippetInjectingResponseWrapper
+
+  public Object getWrapper() {
     return wrapper;
   }
 }

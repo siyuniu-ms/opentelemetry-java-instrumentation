@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import io.opentelemetry.javaagent.bootstrap.servlet.InjectionState;
 import org.junit.jupiter.api.Test;
 
 class SnippetServletOutputStreamTest {

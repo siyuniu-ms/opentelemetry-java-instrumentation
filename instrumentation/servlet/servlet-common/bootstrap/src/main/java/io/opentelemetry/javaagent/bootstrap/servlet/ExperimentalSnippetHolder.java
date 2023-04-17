@@ -16,10 +16,12 @@ public class ExperimentalSnippetHolder {
       return;
     }
     ExperimentalSnippetHolder.snippet = snippet;
+    System.out.println("otel snippet set to be "+snippet.length() + " content"+snippet);
     isSet = true;
   }
 
   public static String getSnippet() {
+    System.out.println("otel getSnippet "+snippet.length());
     return snippet;
   }
 

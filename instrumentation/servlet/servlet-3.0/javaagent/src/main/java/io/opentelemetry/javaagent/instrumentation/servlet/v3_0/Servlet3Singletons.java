@@ -61,6 +61,7 @@ public final class Servlet3Singletons {
   }
 
   public static OutputStreamSnippetInjectionHelper getSnippetInjectionHelper() {
+    System.out.println("OutputStreamSnippetInjectionHelper getSnippetInjectionHelper");
     return SNIPPET_INJECTION_HELPER;
   }
 

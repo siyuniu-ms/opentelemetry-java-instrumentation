@@ -72,6 +72,8 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
   @Override
   public void setHeader(String name, String value) {
     // checking content-type is just an optimization to avoid unnecessary parsing
+    System.out.println("setHeader");
+
     if ("Content-Length".equalsIgnoreCase(name) && isContentTypeTextHtml()) {
       try {
         contentLength = Long.parseLong(value);
@@ -115,12 +117,14 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
 
   @Override
   public void setContentLength(int len) {
+    System.out.println("setContentLength");
     contentLength = len;
     super.setContentLength(len);
   }
 
   @Nullable
   private static MethodHandle findSetContentLengthLongMethod() {
+    System.out.println("findSetContentLengthLongMethod");
     try {
       return MethodHandles.lookup()
           .findSpecial(
@@ -136,6 +140,8 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
 
   // this is for Servlet 3.1 support
   public void setContentLengthLong(long length) throws Throwable {
+    System.out.println("setContentLengthLong" + length);
+
     contentLength = length;
     if (setContentLengthLongHandler == null) {
       super.setContentLength((int) length);
@@ -154,13 +160,17 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
 
   @Override
   public ServletOutputStream getOutputStream() throws IOException {
+    System.out.println("getOutputStream    " + isContentTypeTextHtml());
     ServletOutputStream output = super.getOutputStream();
     initializeInjectionStateIfNeeded(output, this);
+    System.out.println("getOutputStream return   " + output);
     return output;
   }
 
   @Override
   public PrintWriter getWriter() throws IOException {
+    System.out.println("getWriter    " + isContentTypeTextHtml());
+
     if (!isContentTypeTextHtml()) {
       return super.getWriter();
     }
@@ -172,12 +182,16 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
   }
 
   void updateContentLengthIfPreviouslySet() {
+    System.out.println("updateContentlenght is being called, the current lenght is"+ contentLength);
+    System.out.println("updateContentlenght is being called, the snippetLength lenght is"+ snippetLength);
     if (contentLength != UNSET) {
       setContentLength((int) contentLength + snippetLength);
+      System.out.println("updateContentlenght is working, new length"+ contentLength+snippetLength);
     }
   }
 
   boolean isNotSafeToInject() {
+    System.out.println("isNotSafeToInject" + contentLength + "  "+isCommitted());
     // if content-length was set and response was already committed (headers sent to the client),
     // then it is not safe to inject because the content-length header cannot be updated to account
     // for the snippet length

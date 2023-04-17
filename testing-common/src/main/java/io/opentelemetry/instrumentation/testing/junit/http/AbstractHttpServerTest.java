@@ -153,9 +153,6 @@ public abstract class AbstractHttpServerTest<SERVER> extends AbstractHttpServerU
   }
 
   @ParameterizedTest
-  @EnumSource(
-      value = ServerEndpoint.class,
-      names = {"SUCCESS", "QUERY_PARAM"})
   void requestWithQueryString(ServerEndpoint endpoint) {
     String method = "GET";
     AggregatedHttpRequest request = request(endpoint, method);

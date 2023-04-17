@@ -46,8 +46,19 @@ public class Servlet3Advice {
     if (!snippet.isEmpty()
         && !((HttpServletResponse) response)
             .containsHeader(SnippetInjectingResponseWrapper.FAKE_SNIPPET_HEADER)) {
+      System.out.println("wrapper on " + snippet.length());
       response = new SnippetInjectingResponseWrapper((HttpServletResponse) response, snippet);
+    } else {
+      System.out.println("wrapper passed "+ snippet.length());
     }
+//    System.out.println("Servlet3Advice");
+//    if (!((HttpServletResponse) response)
+//        .containsHeader(SnippetInjectingResponseWrapper.FAKE_SNIPPET_HEADER)) {
+//      System.out.println("wrapper on ");
+//      response = new SnippetInjectingResponseWrapper((HttpServletResponse) response, snippet);
+//    } else {
+//      System.out.println("wrapper passed ");
+//    }
     callDepth = CallDepth.forClass(AppServerBridge.getCallDepthKey());
     callDepth.getAndIncrement();
 

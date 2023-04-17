@@ -5,13 +5,15 @@
 
 package io.opentelemetry.javaagent.instrumentation.servlet.v3_0;
 
-import static io.opentelemetry.javaagent.instrumentation.servlet.v3_0.Servlet3Singletons.getSnippetInjectionHelper;
 
-import io.opentelemetry.javaagent.instrumentation.servlet.v3_0.snippet.InjectionState;
+import io.opentelemetry.javaagent.bootstrap.servlet.InjectionState;
 import io.opentelemetry.javaagent.instrumentation.servlet.v3_0.snippet.ServletOutputStreamInjectionState;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.servlet.ServletOutputStream;
 import net.bytebuddy.asm.Advice;
+
+import static io.opentelemetry.javaagent.instrumentation.servlet.v3_0.Servlet3Singletons.getSnippetInjectionHelper;
 
 public class Servlet3OutputStreamWriteBytesAdvice {
 
@@ -19,7 +21,11 @@ public class Servlet3OutputStreamWriteBytesAdvice {
   public static boolean methodEnter(
       @Advice.This ServletOutputStream servletOutputStream, @Advice.Argument(0) byte[] write)
       throws IOException {
+
     InjectionState state = ServletOutputStreamInjectionState.getInjectionState(servletOutputStream);
+    System.out.println("Servlet3OutputStreamWriteBytesAdvice " + state );
+    System.out.write(write);
+    System.out.println("Advice"  + Arrays.toString(write) );
     if (state == null) {
       return true;
     }

@@ -5,7 +5,11 @@
 
 package io.opentelemetry.javaagent.instrumentation.netty.v3_8.server;
 
+import static io.opentelemetry.instrumentation.testing.junit.http.ServerEndpoint.ERROR;
+import static io.opentelemetry.instrumentation.testing.junit.http.ServerEndpoint.INDEXED_CHILD;
 import static io.opentelemetry.instrumentation.testing.junit.http.ServerEndpoint.NOT_FOUND;
+import static io.opentelemetry.instrumentation.testing.junit.http.ServerEndpoint.QUERY_PARAM;
+import static io.opentelemetry.instrumentation.testing.junit.http.ServerEndpoint.SUCCESS;
 import static io.opentelemetry.instrumentation.testing.junit.http.ServerEndpoint.forPath;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
