@@ -10,9 +10,9 @@ import java.time.Duration
 abstract class TomcatSmokeTest extends AppServerTest {
 
   @Override
-  protected Map<String, String> getExtraEnv() {
-    return Collections.singletonMap("JAVA_OPTS", "-Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\>")
-  }
+//  protected Map<String, String> getExtraEnv() {
+//    return Collections.singletonMap("JAVA_OPTS", "-Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\>")
+//  }
 
   protected String getTargetImagePrefix() {
     "ghcr.io/open-telemetry/opentelemetry-java-instrumentation/smoke-test-servlet-tomcat"
