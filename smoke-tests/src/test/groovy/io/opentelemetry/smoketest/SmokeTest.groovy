@@ -15,6 +15,7 @@ import io.opentelemetry.testing.internal.armeria.client.WebClient
 import org.testcontainers.containers.output.ToStringConsumer
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import java.util.regex.Pattern
 import java.util.stream.Stream
@@ -44,11 +45,39 @@ abstract class SmokeTest extends Specification {
     return "JAVA_TOOL_OPTIONS"
   }
 
-  /**
-   * Subclasses can override this method to customise target application's environment
-   */
+
   protected Map<String, String> getExtraEnv() {
     return Collections.singletonMap("JAVA_OPTS", "-Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\>")
+  }
+
+  @Unroll
+  def "JSP smoke test on WildFly"() {
+    when:
+    def response = client().get("/app/jsp").aggregate().join()
+    TraceInspector traces = new TraceInspector(waitForTraces())
+    String responseBody = response.contentUtf8()
+
+    println("=========================")
+    println("=========================")
+    println(response.contentType())
+    println("=========================")
+    println("=========================")
+    println(responseBody)
+    println("=========================")
+    println("=========================")
+
+    then:
+    response.status().isSuccess()
+    responseBody.contains("Successful JSP test")
+
+//    responseBody.contains("<script>console.log(hi)</script>")
+
+    traces.countSpansByKind(Span.SpanKind.SPAN_KIND_SERVER) == 1
+
+    traces.countSpansByName('GET /app/jsp') == 1
+
+    where:
+    [appServer, jdk] << getTestParams()
   }
 
   /**

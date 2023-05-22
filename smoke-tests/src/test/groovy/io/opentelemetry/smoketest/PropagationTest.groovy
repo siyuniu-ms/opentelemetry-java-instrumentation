@@ -50,11 +50,11 @@ abstract class PropagationTest extends SmokeTest {
 
 }
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class DefaultPropagationTest extends PropagationTest {
 }
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class W3CPropagationTest extends PropagationTest {
   @Override
   protected Map<String, String> getExtraEnv() {
@@ -62,7 +62,7 @@ class W3CPropagationTest extends PropagationTest {
   }
 }
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class B3PropagationTest extends PropagationTest {
   @Override
   protected Map<String, String> getExtraEnv() {
@@ -70,7 +70,7 @@ class B3PropagationTest extends PropagationTest {
   }
 }
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class B3MultiPropagationTest extends PropagationTest {
   @Override
   protected Map<String, String> getExtraEnv() {
@@ -78,7 +78,7 @@ class B3MultiPropagationTest extends PropagationTest {
   }
 }
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class JaegerPropagationTest extends PropagationTest {
   @Override
   protected Map<String, String> getExtraEnv() {
@@ -86,7 +86,7 @@ class JaegerPropagationTest extends PropagationTest {
   }
 }
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class OtTracePropagationTest extends SmokeTest {
   @Override
   protected String getTargetImage(String jdk) {
@@ -127,7 +127,7 @@ class OtTracePropagationTest extends SmokeTest {
   }
 }
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class XRayPropagationTest extends PropagationTest {
   @Override
   protected Map<String, String> getExtraEnv() {

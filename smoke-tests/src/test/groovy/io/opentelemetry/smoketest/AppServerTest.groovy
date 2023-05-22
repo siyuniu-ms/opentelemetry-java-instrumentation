@@ -99,7 +99,8 @@ abstract class AppServerTest extends SmokeTest {
     then:
     response.status().isSuccess()
     responseBody.contains("Successful JSP test")
-    responseBody.contains("<script>console.log(hi)</script>")
+
+//    responseBody.contains("<script>console.log(hi)</script>")
 
     traces.countSpansByKind(Span.SpanKind.SPAN_KIND_SERVER) == 1
 

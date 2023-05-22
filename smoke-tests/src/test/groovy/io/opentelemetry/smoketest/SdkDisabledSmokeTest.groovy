@@ -14,7 +14,7 @@ import java.util.jar.JarFile
 
 import static io.opentelemetry.smoketest.TestContainerManager.useWindowsContainers
 
-@IgnoreIf({ useWindowsContainers() })
+@IgnoreIf({ TestContainerManager.useWindowsContainers() })
 class SdkDisabledSmokeTest extends SmokeTest {
 
   protected String getTargetImage(String jdk) {

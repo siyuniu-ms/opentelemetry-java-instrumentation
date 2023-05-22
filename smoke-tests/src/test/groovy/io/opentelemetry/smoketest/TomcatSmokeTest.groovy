@@ -9,7 +9,7 @@ import java.time.Duration
 
 abstract class TomcatSmokeTest extends AppServerTest {
 
-  @Override
+//  @Override
 //  protected Map<String, String> getExtraEnv() {
 //    return Collections.singletonMap("JAVA_OPTS", "-Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\>")
 //  }
