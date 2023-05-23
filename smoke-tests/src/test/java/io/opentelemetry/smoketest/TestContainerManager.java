@@ -6,7 +6,6 @@
 package io.opentelemetry.smoketest;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 import org.testcontainers.containers.output.OutputFrame;

@@ -28,8 +28,6 @@ abstract class AppServerTest extends SmokeTest {
 
   def setupSpec() {
     (serverVersion, jdk) = getAppServer()
-
-
     isWindows = false;
 
     // ibm-semeru-runtimes doesn't publish windows images
@@ -122,7 +120,6 @@ abstract class AppServerTest extends SmokeTest {
     traces.countFilteredAttributes("http.target", "/app/headers") == 1
 
     and: "Number of spans with http protocol version"
-
     traces.countFilteredAttributes("net.protocol.name", "http") == 3
     traces.countFilteredAttributes("net.protocol.version", "1.1") == 3
 
