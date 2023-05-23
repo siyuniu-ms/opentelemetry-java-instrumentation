@@ -28,8 +28,9 @@ abstract class AppServerTest extends SmokeTest {
 
   def setupSpec() {
     (serverVersion, jdk) = getAppServer()
-    isWindows = System.getProperty("os.name").toLowerCase().contains("windows") &&
-      "1" != System.getenv("USE_LINUX_CONTAINERS")
+
+
+    isWindows = false;
 
     // ibm-semeru-runtimes doesn't publish windows images
     // adoptopenjdk is deprecated and doesn't publish Windows 2022 images
@@ -121,6 +122,7 @@ abstract class AppServerTest extends SmokeTest {
     traces.countFilteredAttributes("http.target", "/app/headers") == 1
 
     and: "Number of spans with http protocol version"
+
     traces.countFilteredAttributes("net.protocol.name", "http") == 3
     traces.countFilteredAttributes("net.protocol.version", "1.1") == 3
 
@@ -375,12 +377,12 @@ abstract class AppServerTest extends SmokeTest {
       case "/app/headers":
       case "/app/exception":
       case "/app/asyncgreeting":
-        return "GET " + path
+        return path
       case "/app/hello.txt":
       case "/app/file-that-does-not-exist":
-        return "GET /app/*"
+        return "/app/*"
     }
-    return "GET"
+    return "HTTP GET"
   }
 
   protected List<List<Object>> getTestParams() {

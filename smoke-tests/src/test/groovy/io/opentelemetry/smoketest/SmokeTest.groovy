@@ -48,8 +48,38 @@ abstract class SmokeTest extends Specification {
    * Subclasses can override this method to customise target application's environment
    */
   protected Map<String, String> getExtraEnv() {
-    return Collections.emptyMap()
+    return Collections.singletonMap("JAVA_OPTS", "-Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\>")
   }
+
+//  @Unroll
+//  def "JSP smoke test on WildFly"() {
+//    when:
+//    def response = client().get("/app/jsp").aggregate().join()
+//    TraceInspector traces = new TraceInspector(waitForTraces())
+//    String responseBody = response.contentUtf8()
+//
+//    println("=========================")
+//    println("=========================")
+//    println(response.contentType())
+//    println("=========================")
+//    println("=========================")
+//    println(responseBody)
+//    println("=========================")
+//    println("=========================")
+//
+//    then:
+//    response.status().isSuccess()
+//    responseBody.contains("Successful JSP test")
+//
+////    responseBody.contains("<script>console.log(hi)</script>")
+//
+//    traces.countSpansByKind(Span.SpanKind.SPAN_KIND_SERVER) == 1
+//
+//    traces.countSpansByName('GET /app/jsp') == 1
+//
+//    where:
+//    [appServer, jdk] << getTestParams()
+//  }
 
   /**
    * Subclasses can override this method to disable setting default service name
@@ -160,6 +190,6 @@ abstract class SmokeTest extends Specification {
   }
 
   private static TestContainerManager createContainerManager() {
-    return useWindowsContainers() ? new WindowsTestContainerManager() : new LinuxTestContainerManager()
+    return TestContainerManager.useWindowsContainers() ? new WindowsTestContainerManager() : new LinuxTestContainerManager()
   }
 }
