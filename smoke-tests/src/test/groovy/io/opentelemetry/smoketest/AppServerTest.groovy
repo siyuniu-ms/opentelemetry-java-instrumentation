@@ -28,8 +28,7 @@ abstract class AppServerTest extends SmokeTest {
 
   def setupSpec() {
     (serverVersion, jdk) = getAppServer()
-    isWindows = System.getProperty("os.name").toLowerCase().contains("windows") &&
-      "1" != System.getenv("USE_LINUX_CONTAINERS")
+    isWindows = false;
 
     // ibm-semeru-runtimes doesn't publish windows images
     // adoptopenjdk is deprecated and doesn't publish Windows 2022 images
