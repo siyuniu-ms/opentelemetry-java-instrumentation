@@ -38,13 +38,17 @@ dependencies {
 }
 
 tasks {
-//  val testUseSnippet by registering(Test::class) {
-//    filter {
-//      includeTestsMatching("AbstractServlet3Test")
-//    }
-//    include("**/AbstractServlet3Test.*")
-//    jvmArgs("-Dotel.experimental.javascript-snippet=\\<script type=\"text/javascript\"\\\\> Test </script\\\\> ")
-//  }
+  val testUseSnippet by registering(Test::class) {
+    filter {
+      includeTestsMatching("AbstractServlet3Test")
+    }
+    include("**/AbstractServlet3Test.*")
+    jvmArgs("-Dotel.experimental.javascript-snippet=\\<script type=\"text/javascript\"\\\\> Test </script\\\\> ")
+    jvmArgs("-Dotel.instrumentation.servlet.experimental.capture-request-parameters=test-parameter")
+    // required on jdk17
+    jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+    jvmArgs("-XX:+IgnoreUnrecognizedVMOptions")
+  }
 
   test {
     filter {
@@ -56,14 +60,8 @@ tasks {
     jvmArgs("-XX:+IgnoreUnrecognizedVMOptions")
   }
 
-//  check {
-//    dependsOn(testUseSnippet)
-//  }
+  check {
+    dependsOn(testUseSnippet)
+  }
 
-//  withType<Test>().configureEach {
-//    jvmArgs("-Dotel.instrumentation.servlet.experimental.capture-request-parameters=test-parameter")
-//    // required on jdk17
-//    jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
-//    jvmArgs("-XX:+IgnoreUnrecognizedVMOptions")
-//  }
 }
