@@ -63,5 +63,4 @@ tasks {
   check {
     dependsOn(testUseSnippet)
   }
-
 }
