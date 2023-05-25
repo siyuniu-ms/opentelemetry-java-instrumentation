@@ -48,7 +48,8 @@ abstract class SmokeTest extends Specification {
    * Subclasses can override this method to customise target application's environment
    */
   protected Map<String, String> getExtraEnv() {
-    return Collections.emptyMap()
+//    return Collections.emptyMap()
+    return Collections.singletonMap("JAVA_OPTS", " -Djava.net.preferIPv4Stack=true -Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\> ")
   }
 
   /**
@@ -160,6 +161,6 @@ abstract class SmokeTest extends Specification {
   }
 
   private static TestContainerManager createContainerManager() {
-    return useWindowsContainers() ? new WindowsTestContainerManager() : new LinuxTestContainerManager()
+    return TestContainerManager.useWindowsContainers() ? new WindowsTestContainerManager() : new LinuxTestContainerManager()
   }
 }
