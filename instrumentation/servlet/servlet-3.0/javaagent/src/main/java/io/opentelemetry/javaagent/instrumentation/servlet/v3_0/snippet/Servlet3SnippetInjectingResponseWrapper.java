@@ -3,25 +3,48 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package io.opentelemetry.javaagent.instrumentation.servlet.v5_0.snippet;
+package io.opentelemetry.javaagent.instrumentation.servlet.v3_0.snippet;
 
-import static io.opentelemetry.javaagent.instrumentation.servlet.v5_0.snippet.ServletOutputStreamInjectionState.initializeInjectionStateIfNeeded;
+import static io.opentelemetry.javaagent.instrumentation.servlet.v3_0.snippet.ServletOutputStreamInjectionState.initializeInjectionStateIfNeeded;
 import static java.util.logging.Level.FINE;
 
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
+import io.opentelemetry.javaagent.instrumentation.servlet.snippet.SnippetInjectingPrintWriter;
+import io.opentelemetry.javaagent.instrumentation.servlet.snippet.SnippetInjectingResponseWrapper;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
-public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper {
+/**
+ * Notes on Content-Length: the snippet length is only added to the content length when injection
+ * occurs and the content length was set previously.
+ *
+ * <p>If the Content-Length is set after snippet injection occurs (either for the first time or is
+ * set again for some reason), we intentionally do not add the snippet length, because the
+ * application server may be making that call at the end of a request when it sees the request has
+ * not been submitted, in which case it is likely using the real length of content that has been
+ * written, including the snippet length.
+ */
+public class Servlet3SnippetInjectingResponseWrapper extends HttpServletResponseWrapper
+    implements SnippetInjectingResponseWrapper {
 
-  private static final Logger logger = Logger.getLogger(HttpServletResponseWrapper.class.getName());
+  private static final Logger logger =
+      Logger.getLogger(Servlet3SnippetInjectingResponseWrapper.class.getName());
 
   public static final String FAKE_SNIPPET_HEADER = "FAKE_SNIPPET_HEADER";
 
   private static final int UNSET = -1;
+
+  // this is for Servlet 3.1 support
+  @Nullable
+  private static final MethodHandle setContentLengthLongHandler = findSetContentLengthLongMethod();
+
   private final String snippet;
   private final int snippetLength;
 
@@ -29,7 +52,7 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
 
   private SnippetInjectingPrintWriter snippetInjectingPrintWriter = null;
 
-  public SnippetInjectingResponseWrapper(HttpServletResponse response, String snippet) {
+  public Servlet3SnippetInjectingResponseWrapper(HttpServletResponse response, String snippet) {
     super(response);
     this.snippet = snippet;
     snippetLength = snippet.length();
@@ -70,7 +93,7 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
       try {
         contentLength = Long.parseLong(value);
       } catch (NumberFormatException ex) {
-        logger.log(FINE, "NumberFormatException", ex);
+        logger.log(FINE, "Failed to parse the Content-Length header", ex);
       }
     }
     super.addHeader(name, value);
@@ -100,13 +123,32 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
     super.setContentLength(len);
   }
 
-  @Override
-  public void setContentLengthLong(long length) {
-    contentLength = length;
-    super.setContentLengthLong(length);
+  @Nullable
+  private static MethodHandle findSetContentLengthLongMethod() {
+    try {
+      return MethodHandles.lookup()
+          .findSpecial(
+              HttpServletResponseWrapper.class,
+              "setContentLengthLong",
+              MethodType.methodType(void.class),
+              SnippetInjectingResponseWrapper.class);
+    } catch (NoSuchMethodException | IllegalAccessException e) {
+      return null;
+    }
   }
 
-  boolean isContentTypeTextHtml() {
+  // this is for Servlet 3.1 support
+  public void setContentLengthLong(long length) throws Throwable {
+    contentLength = length;
+    if (setContentLengthLongHandler == null) {
+      super.setContentLength((int) length);
+    } else {
+      setContentLengthLongHandler.invokeWithArguments(this, length);
+    }
+  }
+
+  @Override
+  public boolean isContentTypeTextHtml() {
     String contentType = super.getContentType();
     if (contentType == null) {
       contentType = super.getHeader("content-type");
@@ -133,13 +175,15 @@ public class SnippetInjectingResponseWrapper extends HttpServletResponseWrapper 
     return snippetInjectingPrintWriter;
   }
 
-  void updateContentLengthIfPreviouslySet() {
+  @Override
+  public void updateContentLengthIfPreviouslySet() {
     if (contentLength != UNSET) {
       setContentLength((int) contentLength + snippetLength);
     }
   }
 
-  boolean isNotSafeToInject() {
+  @Override
+  public boolean isNotSafeToInject() {
     // if content-length was set and response was already committed (headers sent to the client),
     // then it is not safe to inject because the content-length header cannot be updated to account
     // for the snippet length

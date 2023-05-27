@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package io.opentelemetry.javaagent.instrumentation.servlet.v3_0.snippet;
+package io.opentelemetry.javaagent.instrumentation.servlet.snippet;
 
 import static java.util.logging.Level.FINE;
 
@@ -19,10 +19,6 @@ public class OutputStreamSnippetInjectionHelper {
       Logger.getLogger(OutputStreamSnippetInjectionHelper.class.getName());
 
   private final Supplier<String> snippetSupplier;
-
-  public OutputStreamSnippetInjectionHelper(String snippet) {
-    this(() -> snippet);
-  }
 
   public OutputStreamSnippetInjectionHelper(Supplier<String> snippetSupplier) {
     this.snippetSupplier = snippetSupplier;
