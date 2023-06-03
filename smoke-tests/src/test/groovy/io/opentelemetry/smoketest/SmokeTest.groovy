@@ -49,7 +49,7 @@ abstract class SmokeTest extends Specification {
    */
   protected Map<String, String> getExtraEnv() {
 //    return Collections.emptyMap()
-    return Collections.singletonMap("JAVA_OPTS", " -Djava.net.preferIPv4Stack=true -Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\> ")
+    return Collections.singletonMap("JAVA_OPTS", " -Djava.net.preferIPv4Stack=true -Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('WHAT'\\)\\</script\\> ")
   }
 
   /**

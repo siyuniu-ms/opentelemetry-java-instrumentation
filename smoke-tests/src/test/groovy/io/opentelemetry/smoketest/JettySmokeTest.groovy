@@ -17,6 +17,12 @@ abstract class JettySmokeTest extends AppServerTest {
   protected TargetWaitStrategy getWaitStrategy() {
     return new TargetWaitStrategy.Log(Duration.ofMinutes(1), ".*Started Server.*")
   }
+
+  @Override
+  protected Map<String, String> getExtraEnv() {
+    return Collections.singletonMap("JAVA_OPTIONS", "-Djava.net.preferIPv4Stack=true -Dotel.experimental.javascript-snippet=<script>console.log(hi)</script>"
+    )
+  }
 }
 
 @AppServer(version = "9.4.51", jdk = "8")

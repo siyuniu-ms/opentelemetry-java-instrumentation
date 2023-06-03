@@ -19,9 +19,5 @@ RUN mkdir $JETTY_BASE && \
 
 WORKDIR $JETTY_BASE
 
-# Set the JAVA_OPTS environment variable with desired Java options
-ENV JAVA_OPTS="-Dotel.experimental.javascript-snippet=\\<script\\>console.log\\('hi'\\)\\</script\\> "
-
-CMD ["java","JAVA_OPTS","-jar","/server/start.jar"]
-
+CMD ["/bin/sh", "-c" , "java $JAVA_OPTIONS   -jar /server/start.jar"]
 COPY app.war $JETTY_BASE/webapps/
