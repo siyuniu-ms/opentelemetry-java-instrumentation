@@ -16,6 +16,7 @@ COPY --from=liberty $LIBERTY $LIBERTY
 RUN ln -s /opt/ol/wlp/usr/servers/defaultServer /config
 
 COPY --chown=1001:0 server.xml /config/server.xml
+COPY --chown=1001:0 jvm.options /config/jvm.options
 COPY --chown=1001:0 app.war /config/apps/
 RUN configure.sh
 

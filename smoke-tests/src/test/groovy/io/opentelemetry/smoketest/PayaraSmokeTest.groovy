@@ -15,7 +15,7 @@ abstract class PayaraSmokeTest extends AppServerTest {
 
   @Override
   protected Map<String, String> getExtraEnv() {
-    return ["HZ_PHONE_HOME_ENABLED": "false"]
+    return ["HZ_PHONE_HOME_ENABLED": "false", "_JAVA_OPTIONS":"-Dotel.experimental.javascript-snippet=<script>console.log(hi)</script>"]
   }
 
   @Override
