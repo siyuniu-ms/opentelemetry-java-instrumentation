@@ -67,6 +67,7 @@ public class Servlet3SnippetInjectingResponseWrapper extends HttpServletResponse
     // and so we would see the presence of the attribute and think the response was already wrapped
     // when it really is not
     // see also https://docs.oracle.com/javaee/7/api/javax/servlet/AsyncContext.html
+    System.out.println("containsHeader" + name.equals(FAKE_SNIPPET_HEADER));
     if (name.equals(FAKE_SNIPPET_HEADER)) {
       return true;
     }
@@ -82,6 +83,8 @@ public class Servlet3SnippetInjectingResponseWrapper extends HttpServletResponse
       } catch (NumberFormatException ex) {
         logger.log(FINE, "NumberFormatException", ex);
       }
+      System.out.println("Contentlength" + Long.parseLong(value));
+
     }
     super.setHeader(name, value);
   }
@@ -158,6 +161,8 @@ public class Servlet3SnippetInjectingResponseWrapper extends HttpServletResponse
 
   @Override
   public ServletOutputStream getOutputStream() throws IOException {
+    System.out.println("getOutputStream");
+
     ServletOutputStream output = super.getOutputStream();
     initializeInjectionStateIfNeeded(output, this);
     return output;
@@ -165,6 +170,8 @@ public class Servlet3SnippetInjectingResponseWrapper extends HttpServletResponse
 
   @Override
   public PrintWriter getWriter() throws IOException {
+    System.out.println("getWriter");
+
     if (!isContentTypeTextHtml()) {
       return super.getWriter();
     }

@@ -18,16 +18,21 @@ public class Servlet3OutputStreamWriteIntAdvice {
   @Advice.OnMethodEnter(skipOn = Advice.OnDefaultValue.class, suppress = Throwable.class)
   public static boolean methodEnter(
       @Advice.This ServletOutputStream servletOutputStream, @Advice.Argument(0) int write)
-      throws IOException {
-    InjectionState state = ServletOutputStreamInjectionState.getInjectionState(servletOutputStream);
-    if (state == null) {
-      return true;
+     {
+    System.out.println("------ Servlet3OutputStreamWriteIntAdvice");
+
+    try {
+      InjectionState state = ServletOutputStreamInjectionState.getInjectionState(
+          servletOutputStream);
+      if (state == null) {
+        return true;
+      }
+
+      return !getSnippetInjectionHelper().handleWrite(state, servletOutputStream, write);
+    }catch(Throwable t){
+      t.printStackTrace();
+
     }
-    // if handleWrite returns true, then it means the original bytes + the snippet were written
-    // to the servletOutputStream, and so we no longer need to execute the original method
-    // call (see skipOn above)
-    // if it returns false, then it means nothing was written to the servletOutputStream and the
-    // original method call should be executed
-    return !getSnippetInjectionHelper().handleWrite(state, servletOutputStream, write);
+    return true;
   }
 }

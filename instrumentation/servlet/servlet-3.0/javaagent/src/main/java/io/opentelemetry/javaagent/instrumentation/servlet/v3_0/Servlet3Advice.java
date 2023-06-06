@@ -47,6 +47,7 @@ public class Servlet3Advice {
     if (!snippet.isEmpty()
         && !((HttpServletResponse) response)
             .containsHeader(Servlet3SnippetInjectingResponseWrapper.FAKE_SNIPPET_HEADER)) {
+      System.out.println("Servlet3SnippetInjectingResponseWrapper");
       response =
           new Servlet3SnippetInjectingResponseWrapper((HttpServletResponse) response, snippet);
     }

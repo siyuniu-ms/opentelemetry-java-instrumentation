@@ -13,10 +13,13 @@ public class ExperimentalSnippetHolder {
       new AtomicReference<>(System.getProperty("otel.experimental.javascript-snippet", ""));
 
   public static void setSnippet(String newValue) {
+    System.out.println("set snippet to" + newValue);
     snippet.compareAndSet("", newValue);
   }
 
   public static String getSnippet() {
+    System.out.println("getSnippet" + snippet.get());
+
     return snippet.get();
   }
 

@@ -20,16 +20,21 @@ public class Servlet3OutputStreamWriteBytesAndOffsetAdvice {
       @Advice.Argument(value = 0) byte[] write,
       @Advice.Argument(value = 1) int off,
       @Advice.Argument(value = 2) int len)
-      throws IOException {
-    InjectionState state = ServletOutputStreamInjectionState.getInjectionState(servletOutputStream);
-    if (state == null) {
-      return true;
+      {
+    System.out.println("------ Servlet3OutputStreamWriteBytesAndOffsetAdvice");
+
+    try {
+      InjectionState state = ServletOutputStreamInjectionState.getInjectionState(
+          servletOutputStream);
+      if (state == null) {
+        return true;
+      }
+
+      return !getSnippetInjectionHelper().handleWrite(state, servletOutputStream, write, off, len);
+    }catch(Throwable t){
+      t.printStackTrace();
+
     }
-    // if handleWrite returns true, then it means the original bytes + the snippet were written
-    // to the servletOutputStream, and so we no longer need to execute the original method
-    // call (see skipOn above)
-    // if it returns false, then it means nothing was written to the servletOutputStream and the
-    // original method call should be executed
-    return !getSnippetInjectionHelper().handleWrite(state, servletOutputStream, write, off, len);
+    return true;
   }
 }
