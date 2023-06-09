@@ -23,6 +23,10 @@ public class OutputStreamSnippetInjectionHelper {
     this.snippet = snippet;
   }
 
+  public void updateSnippet(String updateValue){
+    this.snippet = updateValue;
+  }
+
   /**
    * return true means this method performed the injection, return false means it didn't inject
    * anything Servlet3OutputStreamWriteAdvice would skip the write method when the return value is
