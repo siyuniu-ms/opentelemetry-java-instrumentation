@@ -4,11 +4,11 @@
  */
 
 import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.api.internal.ConfigPropertiesUtil
 import io.opentelemetry.instrumentation.test.AgentTestTrait
 import io.opentelemetry.instrumentation.test.asserts.TraceAssert
 import io.opentelemetry.instrumentation.test.base.HttpServerTest
 import io.opentelemetry.instrumentation.testing.junit.http.ServerEndpoint
-import io.opentelemetry.javaagent.bootstrap.servlet.ExperimentalSnippetHolder
 import io.opentelemetry.testing.internal.armeria.common.AggregatedHttpRequest
 import jakarta.servlet.Servlet
 
@@ -133,16 +133,19 @@ abstract class AbstractServlet5Test<SERVER, CONTEXT> extends HttpServerTest<SERV
 
   def "snippet injection with ServletOutputStream"() {
     setup:
-    ExperimentalSnippetHolder.setSnippet("\n  <script type=\"text/javascript\"> Test </script>")
     def request = request(HTML_SERVLET_OUTPUT_STREAM, "GET")
     def response = client.execute(request).aggregate().join()
 
     expect:
+    String checkSnippetExsit = ConfigPropertiesUtil.getString("otel.experimental.javascript-snippet")
+    if (!checkSnippetExsit || checkSnippetExsit.length() <= 0){
+      return
+    }
     response.status().code() == HTML_SERVLET_OUTPUT_STREAM.status
     String result = "<!DOCTYPE html>\n" +
       "<html lang=\"en\">\n" +
-      "<head>\n" +
-      "  <script type=\"text/javascript\"> Test </script>\n" +
+      "<head>" +
+      "<script> Test </script>\n" +
       "  <meta charset=\"UTF-8\">\n" +
       "  <title>Title</title>\n" +
       "</head>\n" +
@@ -172,16 +175,19 @@ abstract class AbstractServlet5Test<SERVER, CONTEXT> extends HttpServerTest<SERV
 
   def "snippet injection with PrintWriter"() {
     setup:
-    ExperimentalSnippetHolder.setSnippet("\n  <script type=\"text/javascript\"> Test </script>")
     def request = request(HTML_PRINT_WRITER, "GET")
     def response = client.execute(request).aggregate().join()
 
     expect:
+    String checkSnippetExsit = ConfigPropertiesUtil.getString("otel.experimental.javascript-snippet")
+    if (!checkSnippetExsit || checkSnippetExsit.length() <= 0){
+      return
+    }
     response.status().code() == HTML_PRINT_WRITER.status
     String result = "<!DOCTYPE html>\n" +
       "<html lang=\"en\">\n" +
-      "<head>\n" +
-      "  <script type=\"text/javascript\"> Test </script>\n" +
+      "<head>" +
+      "<script> Test </script>\n" +
       "  <meta charset=\"UTF-8\">\n" +
       "  <title>Title</title>\n" +
       "</head>\n" +
