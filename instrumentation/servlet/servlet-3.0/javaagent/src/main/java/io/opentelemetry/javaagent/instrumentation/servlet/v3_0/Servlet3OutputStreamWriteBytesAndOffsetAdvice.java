@@ -9,11 +9,12 @@ import static io.opentelemetry.javaagent.instrumentation.servlet.v3_0.Servlet3Si
 
 import io.opentelemetry.javaagent.instrumentation.servlet.snippet.InjectionState;
 import io.opentelemetry.javaagent.instrumentation.servlet.v3_0.snippet.ServletOutputStreamInjectionState;
-import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import net.bytebuddy.asm.Advice;
 
 public class Servlet3OutputStreamWriteBytesAndOffsetAdvice {
+
+  @SuppressWarnings("CatchAndPrintStackTrace")
   @Advice.OnMethodEnter(skipOn = Advice.OnDefaultValue.class, suppress = Throwable.class)
   public static boolean methodEnter(
       @Advice.This ServletOutputStream servletOutputStream,
@@ -32,6 +33,7 @@ public class Servlet3OutputStreamWriteBytesAndOffsetAdvice {
 
       return !getSnippetInjectionHelper().handleWrite(state, servletOutputStream, write, off, len);
     }catch(Throwable t){
+//      System.out.println("warning"+t);
       t.printStackTrace();
 
     }

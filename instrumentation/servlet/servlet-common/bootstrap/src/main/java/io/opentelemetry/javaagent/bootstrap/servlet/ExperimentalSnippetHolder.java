@@ -23,7 +23,7 @@ public class ExperimentalSnippetHolder {
   }
 
   public static String getSnippet() {
-    System.out.println("getSnippet" + snippet.get());
+//    System.out.println("getSnippet" + snippet.get());
 
     return snippet.get();
   }
