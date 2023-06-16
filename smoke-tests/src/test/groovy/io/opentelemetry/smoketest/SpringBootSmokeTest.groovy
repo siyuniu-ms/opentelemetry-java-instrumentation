@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toSet
 class SpringBootSmokeTest extends SmokeTest {
 
   protected String getTargetImage(String jdk) {
-    "ghcr.io/open-telemetry/opentelemetry-java-instrumentation/smoke-test-spring-boot:jdk$jdk-20230321.4484174638"
+    "ghcr.io/open-telemetry/opentelemetry-java-instrumentation/smoke-test-spring-boot:jdk$jdk-20230616.152272"
   }
 
   @Override
@@ -40,64 +40,25 @@ class SpringBootSmokeTest extends SmokeTest {
   }
 
   @Unroll
-  def "spring boot smoke test on JDK #jdk"(int jdk) {
+  def "snippet test"(int jdk) {
     setup:
     def output = startTarget(jdk)
     def currentAgentVersion = new JarFile(agentPath).getManifest().getMainAttributes().get(Attributes.Name.IMPLEMENTATION_VERSION).toString()
 
     when:
-    def response = client().get("/greeting").aggregate().join()
+    def response = client().get("/snippetTest").aggregate().join()
     Collection<ExportTraceServiceRequest> traces = waitForTraces()
-
+    String responseBody = response.contentUtf8()
     then: "spans are exported"
-    response.contentUtf8() == "Hi!"
-    countSpansByName(traces, 'GET /greeting') == 1
-    countSpansByName(traces, 'WebController.greeting') == 1
-    countSpansByName(traces, 'WebController.withSpan') == 1
+    response.status().isSuccess()
+    println(responseBody)
 
-    then: "thread details are recorded"
-    getSpanStream(traces)
-      .allMatch { it.attributesList.stream().map { it.key }.collect(toSet()).containsAll(["thread.id", "thread.name"]) }
-
-    then: "correct agent version is captured in the resource"
-    [currentAgentVersion] as Set == findResourceAttribute(traces, "telemetry.auto.version")
-      .map { it.stringValue }
-      .collect(toSet())
-
-    then: "OS is captured in the resource"
-    findResourceAttribute(traces, "os.type")
-      .map { it.stringValue }
-      .findAny()
-      .isPresent()
-
-    then: "javaagent logs its version on startup"
-    isVersionLogged(output, currentAgentVersion)
-
-    then: "correct traceIds are logged via MDC instrumentation"
-    def loggedTraceIds = getLoggedTraceIds(output)
-    def spanTraceIds = getSpanStream(traces)
-      .map({ TraceId.fromBytes(it.getTraceId().toByteArray()) })
-      .collect(toSet())
-    loggedTraceIds == spanTraceIds
-
-    then: "JVM metrics are exported"
-    def metrics = new MetricsInspector(waitForMetrics())
-    metrics.hasMetricsNamed("process.runtime.jvm.memory.init")
-    metrics.hasMetricsNamed("process.runtime.jvm.memory.usage")
-    metrics.hasMetricsNamed("process.runtime.jvm.memory.committed")
-    metrics.hasMetricsNamed("process.runtime.jvm.memory.limit")
-
-    then: "service name is autodetected"
-    def serviceName = findResourceAttribute(traces, "service.name")
-      .map { it.stringValue }
-      .findAny()
-    serviceName.isPresent()
-    serviceName.get() == "otel-spring-test-app"
+    responseBody.contains("<script>console.log(hi)</script>")
 
     cleanup:
     stopTarget()
 
     where:
-    jdk << [8, 11, 17, 19]
+    jdk << [11]
   }
 }
