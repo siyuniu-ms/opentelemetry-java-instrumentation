@@ -8,7 +8,7 @@ package io.opentelemetry.javaagent.instrumentation.servlet.v5_0.snippet;
 import static io.opentelemetry.javaagent.instrumentation.servlet.v5_0.snippet.ServletOutputStreamInjectionState.initializeInjectionStateIfNeeded;
 import static java.util.logging.Level.FINE;
 
-import io.opentelemetry.javaagent.bootstrap.servlet.SnippetInjectingResponseWrapper;
+import io.opentelemetry.javaagent.instrumentation.servlet.snippet.SnippetInjectingResponseWrapper;
 import io.opentelemetry.javaagent.instrumentation.servlet.snippet.SnippetInjectingPrintWriter;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;

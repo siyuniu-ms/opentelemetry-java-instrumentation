@@ -13,7 +13,7 @@ public abstract class AbstractTestContainerManager implements TestContainerManag
   protected static final int BACKEND_PORT = 8080;
 
   protected static final String BACKEND_ALIAS = "backend";
-  protected static final String TARGET_AGENT_FILENAME = "opentelemetry-javaagent.jar";
+  protected static final String TARGET_AGENT_FILENAME = "opentelemetry-javaagent-1.28.0-SNAPSHOT.jar";
 
   private boolean started = false;
 

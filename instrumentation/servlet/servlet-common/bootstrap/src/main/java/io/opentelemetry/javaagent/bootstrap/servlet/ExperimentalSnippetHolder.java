@@ -21,6 +21,7 @@ public class ExperimentalSnippetHolder {
   }
 
   public static String getSnippet() {
+    System.out.println("this is the new version");
     return snippet;
   }
 
