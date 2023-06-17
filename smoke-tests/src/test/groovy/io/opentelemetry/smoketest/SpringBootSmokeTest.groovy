@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toSet
 class SpringBootSmokeTest extends SmokeTest {
 
   protected String getTargetImage(String jdk) {
-    "ghcr.io/open-telemetry/opentelemetry-java-instrumentation/smoke-test-spring-boot:jdk$jdk-20230616.152272"
+    "ghcr.io/open-telemetry/opentelemetry-java-instrumentation/smoke-test-spring-boot:jdk$jdk-20230616.154135"
   }
 
   @Override
@@ -46,7 +46,7 @@ class SpringBootSmokeTest extends SmokeTest {
     def currentAgentVersion = new JarFile(agentPath).getManifest().getMainAttributes().get(Attributes.Name.IMPLEMENTATION_VERSION).toString()
 
     when:
-    def response = client().get("/snippetTest").aggregate().join()
+    def response = client().get("/test").aggregate().join()
     Collection<ExportTraceServiceRequest> traces = waitForTraces()
     String responseBody = response.contentUtf8()
     then: "spans are exported"
